@@ -19,4 +19,9 @@ const Route = use('Route')
 
 Route.group( () => {
   Route.resource('users','UserController')
+  Route.post('users/login', 'UserController.login')
+  // Route.resource('games','GameController').middleware('auth')
+  Route.post('games','GameController.create').middleware('auth')
+  Route.get('games','GameController.index').middleware('auth')
+
 } ).prefix('api/v1')

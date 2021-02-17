@@ -7,6 +7,8 @@
 /**
  * Resourceful controller for interacting with games
  */
+const Game = use('App/Models/Game')
+
 class GameController {
   /**
    * Show a list of all games.
@@ -17,19 +19,28 @@ class GameController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
+  async index ({ request, response,auth }) {
+    const user = await auth.getUser()
+    return await user.games().fetch();
   }
 
   /**
-   * Render a form to be used for creating a new game.
-   * GET games/create
+   * Create/save a new game.
+   * POST games/create
    *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
    */
-  async create ({ request, response, view }) {
+  async create ({ request, auth }) {
+    const user = await auth.getUser()
+    const {name,description,size,active} = request.all()
+    const game = new Game()
+    game.fill({
+      name,
+      description,
+      active,
+      size
+    })
+    await user.games().save(game);
+    return game
   }
 
   /**
